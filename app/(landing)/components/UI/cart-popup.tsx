@@ -2,8 +2,9 @@ import Image from "next/image";
 import priceFormatter from "@/app/utils/price-formatter";
 import Button from "./button";
 import { FiArrowRight, FiTrash2 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
-const CartList = [
+export const cartList = [
   {
     name: "SportsOn Hyperfast Shoes",
     category: "Running",
@@ -25,19 +26,32 @@ const CartList = [
     qty: 4,
     imgUrl: "sportshirt-1.png",
   },
+  {
+    name: "SportsOn HyperSoccer v2",
+    category: "Football",
+    price: 458000,
+    qty: 2,
+    imgUrl: "football-shoes.png",
+  },
 ];
-const CartPopUp = () => {
 
-    const totalPrice = CartList.reduce(
+export const totalPrice = cartList.reduce(
         (total, item) => total + item.price * item.qty, 0
     );
+    
+const CartPopUp = () => {
+
+    const {push} = useRouter ();
+    const handleCheckout = () => {
+        push ("/checkout");
+    }
 
     return (
-        <div className="absolute bg-white right-0 top-12 shadow-xl shadow-black/10 border border-gray-200 w-90">
+        <div className="absolute bg-white right-0 top-12 shadow-xl shadow-black/10 border border-gray-200 w-90 z-10">
             <div className="py-4 border-b border-gray-200 font-bold text-center">
                 Shopping Cart
             </div>
-            {CartList.map((item, index) => (
+            {cartList.map((item, index) => (
                     <div className="border-b border-gray-200 p-4 flex gap-3" key={index}>
                         <div className="bg-primary-light aspect-square w-16 flex justify-center items-center">
                             <Image src={`/images/products/${item.imgUrl}`} width={63} height={63} alt={item.name} className="aspect-square object-contain"/>
@@ -60,7 +74,7 @@ const CartPopUp = () => {
                     {priceFormatter(totalPrice)}
                     </div>
                 </div>
-                <Button variant="dark" size="small" className="w-full mt-4"> Checkout Now <FiArrowRight /></Button>
+                <Button variant="dark" size="small" className="w-full mt-4" onClick={handleCheckout}> Checkout Now <FiArrowRight /></Button>
             </div>
             
         </div>

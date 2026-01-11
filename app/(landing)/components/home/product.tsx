@@ -4,7 +4,7 @@ import Button from "../UI/button";
 import { FiPlus } from "react-icons/fi";
 import priceFormatter from "@/app/utils/price-formatter";
 
-const ProductList = [
+const productList = [
   {
     name: "SportsOn Hyperfast Shoes",
     category: "Running",
@@ -57,14 +57,14 @@ const ProductList = [
 
 const ProductsSection = () => {
   return (
-    <section id="products-section" className="container mx-auto mt-32">
+    <section id="products-section" className="container mx-auto mt-32 mb-36">
       <h2 className="font-bold italic text-4xl text-center mb-11">
         <span className="text-primary">OUR</span> PRODUCT
       </h2>
       <div className="grid grid-cols-4 gap-5">
-        {ProductList.map((product, index) => (
+        {productList.map((product, index) => (
           <Link
-            href="#"
+            href={`/product/${product.name}`}
             key={index}
             className="p-1.5 bg-white hover:drop-shadow-xl duration-300"
           >
