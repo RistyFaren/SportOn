@@ -4,14 +4,27 @@ import { FiArrowRight, FiChevronDown, FiChevronUp, FiShoppingBag } from "react-i
 import Button from "../UI/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Product } from "@/app/types";
+import { useCartStore } from "@/app/hooks/use-cart-store";
 
-const ProductAction = () => {
+type TProductActionProps = {
+    product: Product;
+    stock: number;
+}
+
+const ProductAction = ({product, stock}: TProductActionProps) => {
+    const {addItem} = useCartStore();
     const {push} = useRouter ();
     const [qty, setQty] = useState (1)
 
-    const checkout = () =>{
+    const handleAddtoCart = () => {
+        addItem(product, qty);
+    };
 
-    }
+    const handleCheckout = () =>{
+     addItem(product);
+     push("/checkout");
+    };
 
     return (
         <div className="flex gap-5">
@@ -21,7 +34,7 @@ const ProductAction = () => {
                 </div>
                 <div className="flex flex-col">
                     <button className="border-b border-gray-500 cursor-pointer h-1/2 aspect-square flex items-center justify-center"
-                    onClick={() => setQty(qty + 1)}>
+                    onClick={() => setQty(qty < stock ? qty + 1 : qty)}>
                         <FiChevronUp/>
                     </button>
                     <button className="cursor-pointer h-1/2 aspect-square flex items-center justify-center"
@@ -30,8 +43,8 @@ const ProductAction = () => {
                     </button>
                 </div>
             </div>
-            <Button className="px-20 w-full"><FiShoppingBag size={24}/>Add to Cart</Button>
-            <Button variant="dark" className="px-20 w-full" onClick={() => push ("/checkout")}>Checkout Now<FiArrowRight size={24}/></Button>
+            <Button className="px-20 w-full" onClick={handleAddtoCart}><FiShoppingBag size={24}/>Add to Cart</Button>
+            <Button variant="dark" className="px-20 w-full" onClick={handleCheckout}>Checkout Now<FiArrowRight size={24}/></Button>
         </div>
     )
 }

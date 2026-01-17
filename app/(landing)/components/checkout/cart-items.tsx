@@ -1,29 +1,36 @@
 "use client";
 
-import { cartList } from "../UI/cart-popup";
 import Image from "next/image";
 import Button from "../UI/button";
 import { FiCreditCard, FiTrash2 } from "react-icons/fi";
 import priceFormatter from "@/app/utils/price-formatter";
-import { totalPrice } from "../UI/cart-popup";
 import CardWithHeader from "../UI/card-with-header";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/app/hooks/use-cart-store";
+import { getImageUrl } from "@/app/lib/api";
 
-const CartItems = () => {
+type TCartItems = {
+  handlePayment: () => void;
+}
+
+const CartItems = ({handlePayment}: TCartItems) => {
+  const {items, removeItem} = useCartStore();
   const {push} = useRouter ();
 
-  const payment = () => {
-
-  }
+  const totalPrice = items.reduce(
+        (total, item) => total + item.price * item.qty,
+        0
+        );
 
   return (
     <CardWithHeader title="Card Items">
-      <div className="overflow-auto max-h-75">
-        {cartList.map((item, index) => (
-        <div className="border-b border-gray-200 p-4 flex gap-3" key={index}>
+      <div className="flex flex-col justify-between h-[calc(100%-70px)]">
+        <div className="overflow-auto max-h-75">
+        {items.map((item) => (
+        <div className="border-b border-gray-200 p-4 flex gap-3" key={item._id}>
           <div className="bg-primary-light aspect-square w-16 flex justify-center items-center">
             <Image
-              src={`/images/products/${item.imgUrl}`}
+              src={getImageUrl(item.imageUrl)}
               width={63}
               height={63}
               alt={item.name}
@@ -41,7 +48,7 @@ const CartItems = () => {
             size="small"
             variant="ghost"
             className="w-7 h-7 p-0! self-center ml-auto"
-          >
+          onClick={()=> removeItem(item._id)}>
             <FiTrash2 />
           </Button>
         </div>
@@ -54,9 +61,10 @@ const CartItems = () => {
             {priceFormatter(totalPrice)}
           </div>
         </div>
-        <Button variant="dark" className="w-full mt-4" onClick={() => push ("/payment")}>
+        <Button variant="dark" className="w-full mt-4" onClick={handlePayment}>
           <FiCreditCard /> Proceed to Payment
         </Button>
+      </div>
       </div>
     </CardWithHeader>
   );
